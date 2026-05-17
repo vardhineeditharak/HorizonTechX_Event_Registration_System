@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Event{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="form-heading">
+        <p class="eyebrow">Organizer</p>
+        <h1>Delete event</h1>
+    </div>
+
+    <form class="form-panel" method="post">
+        {% csrf_token %}
+        <p class="lead">Delete "{{ object.title }}"? This will also remove all registrations for this event.</p>
+        <div class="form-actions">
+            <a class="button button-light" href="{% url 'event-detail-page' object.pk %}">Keep Event</a>
+            <button class="button button-danger" type="submit">Delete Event</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

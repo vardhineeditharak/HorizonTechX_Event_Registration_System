@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+    <article class="detail-panel">
+        <p class="eyebrow">Event Details</p>
+        <h1>{{ event.title }}</h1>
+        <div class="detail-tags">
+            <span class="status-pill">{{ event.date|date:"M d, Y" }}</span>
+            <span class="status-pill">{{ event.time|time:"g:i A" }}</span>
+            <span class="status-pill">{{ event.location }}</span>
+        </div>
+        <p class="lead">{{ event.description }}</p>
+
+        <dl class="detail-list">
+            <div>
+                <dt>Date</dt>
+                <dd>{{ event.date }}</dd>
+            </div>
+            <div>
+                <dt>Time</dt>
+                <dd>{{ event.time }}</dd>
+            </div>
+            <div>
+                <dt>Location</dt>
+                <dd>{{ event.location }}</dd>
+            </div>
+            <div>
+                <dt>Organizer</dt>
+                <dd>{{ event.organizer.username }}</dd>
+            </div>
+        </dl>
+
+        {% if user == event.organizer %}
+            <div class="organizer-actions">
+                <a class="button" href="{% url 'event-edit-page' event.pk %}">Edit Event</a>
+                <a class="button button-danger" href="{% url 'event-delete-page' event.pk %}">Delete Event</a>
+            </div>
+        {% endif %}
+    </article>
+
+    <aside class="action-panel">
+        <h2>Registration</h2>
+        <div class="seat-meter">
+            <span style="width: {% widthratio seats_taken event.capacity 100 %}%"></span>
+        </div>
+        <p class="seat-count">{{ seats_left }} seats left</p>
+        <p class="muted">{{ seats_taken }} of {{ event.capacity }} registered</p>
+
+        {% if user.is_authenticated %}
+            {% if user_registration %}
+                <p class="status-pill">You are registered</p>
+                <form method="post" action="{% url 'registration-cancel-page' user_registration.pk %}">
+                    {% csrf_token %}
+                    <button class="button button-danger button-wide" type="submit">Cancel Registration</button>
+                </form>
+            {% elif event.is_past %}
+                <p class="status-pill status-muted">Registration closed</p>
+            {% elif seats_left > 0 %}
+                <form method="post" action="{% url 'event-register-page' event.pk %}">
+                    {% csrf_token %}
+                    <button class="button button-wide" type="submit">Register Now</button>
+                </form>
+            {% else %}
+                <p class="status-pill status-muted">Event full</p>
+            {% endif %}
+        {% else %}
+            <a class="button button-wide" href="{% url 'login' %}">Login to Register</a>
+        {% endif %}
+    </aside>
+</section>
+{% endblock %}

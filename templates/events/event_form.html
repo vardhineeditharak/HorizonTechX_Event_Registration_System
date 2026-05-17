@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Event{% endblock %}
+
+{% block content %}
+<section class="form-shell">
+    <div class="form-heading">
+        <p class="eyebrow">Organizer</p>
+        <h1>Create an event</h1>
+    </div>
+
+    <form class="form-panel" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+            <label>
+                <span>{{ field.label }}</span>
+                {{ field }}
+                {{ field.errors }}
+            </label>
+        {% endfor %}
+
+        <button class="button button-wide" type="submit">Save Event</button>
+    </form>
+</section>
+{% endblock %}

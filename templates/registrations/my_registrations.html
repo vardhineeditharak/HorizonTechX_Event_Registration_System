@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}My Registrations{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>My registrations</h1>
+    </div>
+</section>
+
+<section class="registration-list">
+    {% for registration in registrations %}
+        <article class="registration-row">
+            <div>
+                <h2>{{ registration.event.title }}</h2>
+                <p>{{ registration.event.date }} at {{ registration.event.time }} - {{ registration.event.location }}</p>
+            </div>
+            <form method="post" action="{% url 'registration-cancel-page' registration.pk %}">
+                {% csrf_token %}
+                <button class="button button-danger" type="submit">Cancel</button>
+            </form>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h2>No registrations yet</h2>
+            <p>Browse events and reserve your spot.</p>
+            <a class="button" href="{% url 'event-list-page' %}">Browse Events</a>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}
